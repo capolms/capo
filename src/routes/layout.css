@@ -1,3 +1,14 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* This prevents the body itself from ever scrolling */
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
