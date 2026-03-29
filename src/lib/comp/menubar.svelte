@@ -9,8 +9,10 @@
 <script>
 		import { onMount } from 'svelte';
 		import { invalidateAll } from '$app/navigation';
+
 		import { menu_shown, show_menu } from '$lib/comp/show_menu';
 		import { theme as themeStore } from '$lib/comp/get_theme';
+
 		import Fa from 'svelte-fa';
 		import { faBars, faCircleQuestion, faMoon,
 				faSun, faGlobe, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -39,7 +41,7 @@
 		let { nonLMSLinks } = $props();
 </script>
 
-<div class="bg-zinc-300 dark:bg-zinc-800 dark:text-white flex flex-row justify-between pl-5 pr-5 pt-2 pb-2">
+<div class="bg-zinc-300 dark:bg-gray-950 dark:text-white flex flex-row justify-between pl-5 pr-5 pt-2 pb-2">
 		<div class="flex justify-center">
 				<a class="pl-2 pr-2 mt-2 mb-2" href="/home">CapoLMS</a>
 				<a class="{nonLMSLinks ? "hidden sm:flex" : "hidden"} pl-2 pr-2 mt-2 mb-2" href="/dashboard">
@@ -60,6 +62,7 @@
 						{:else}
 								<Fa icon={faArrowLeft} />
 						{/if}
+						<p class="hidden md:block">{$menu_shown === "hidden" ? "Show Menu" : "Hide Menu"}</p>
 				</a>
 		</div>
 

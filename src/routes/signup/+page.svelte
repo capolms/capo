@@ -1,97 +1,174 @@
 <script>
-		import { onMount } from 'svelte';
+		import { onMount } from "svelte";
+
+		import "$lib/style/signin.css";
+
+		import { supabase } from "$lib/api/sb";
 		import Fa from "svelte-fa";
 		import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 		import { theme } from "$lib/comp/get_theme";
+		import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-		let isReady = false;
-
+		// For auth.
+		let isReady = $state(false);
 		onMount(async () => {
-				theme.set(document.documentElement.getAttribute('data-theme'));
-				isReady = true;
+				const { data: { session }, error } = await supabase.auth.getSession()
+				if (session) {
+						goto('/dashboard', { replaceState : true});
+				} else {
+						isReady = true;
+				};
 		});
 
-		// List of variables we have collected.
-		let email    = '';
-		let username = '';
-		let password = '';
-		let retype   = '';
+		// variables for checking.
+		let email = $state("");
+		let name = $state("");
+		let password = $state("");
+		let confirmPassword = $state("");
+		let showPassword = $state(false);
+		let showConfirm = $state(false);
+		let touched = $state({
+				email: false,
+				password: false,
+				name: false,
+				confirm: false,
+		});
+		let errors = $state({
+				email: "",
+				name: "",
+				password: "",
+				confirm: "",
+		});
+		function validate() {
+				errors.email = email === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+						? "Invalid email. Use this format: your@example.domain" : "";
 
-		let emailFalse = false;
-		let usernameFalse = false;
-		let passwordFalse = false;
-		let retypeFalse = false;
-
-		let emailUsed = false;
-		let usernameUsed = false;
-
-		function signup() {
-				// Regex list.
-				const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-				const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-				const usernameRegex = /^[a-zA-Z0-9_-]{8,}$/;
-				if (!emailRegex.test(email)) {
-						emailFalse = true;
-				} else { emailFalse = false }
-				if (!usernameRegex.test(username)) {
-						usernameFalse = true;
-				} { usernameFalse = false }
-				if (!passwordRegex.test(password)) {
-						passwordFalse = true;
-				} else { passwordFalse = false }
-				if (retype !== password || retype === "") {
-						retypeFalse = true;
-				} else { retypeFalse = false };
+				errors.password = password === "" || !/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)
+						? "Minimum 8 letters, one capital letter, one number, and one symbol."
+						: "";
+				errors.confirm = confirmPassword && password !== confirmPassword
+						? "Password does not match."
+						: "";
+				errors.name = name === "" ? "Name has not been filled out." : "";
 		};
+		async function createAccount() {
+				if (email === "") {
+						touched.email = true;
+						errors.email = "Email has not been filled out."
+				};
+				if (password === "") {
+						touched.password = true;
+						errors.password = "Password has not been filled out."
+				};
+				if (name === "") {
+						touched.name = true;
+						errors.name = "Name has not been filled out."
+				};
+				if (errors.email === "" && errors.password === "" && errors.confirm === "") {
+						const { data, error } = await supabase.auth.signUp({
+								email: email,
+								password: password,
+								options: {
+										data: {
+												name: name
+										}
+								}
+						});
+				};
+		};
+
 </script>
 
-{#if isReady}
-<div class="flex flex-row h-full w-full">
-		<div class="dark:bg-zinc-700 pl-10 pr-10 flex flex-col w-full sm:w-2/5">
-				<div class="flex flex-col items-center justify-center h-screen">
-						<h1 class="pb-2 w-full text-2xl font-bold">Sign Up</h1>
-						<!-- Inputs -->
-						<div class="w-full">
-								<p class="pt-4 pb-1">Enter your email:</p>
-								<input class="pb-4 pt-4 h-1 w-full rounded-lg dark:text-white bg-zinc-200 dark:bg-zinc-700 dark:border-white"
-							 bind:value={email} placeholder="Valid example: your@example.com" />
-								<p class="{emailFalse ? '' : 'hidden'} text-sm text-red-600 dark:text-red-400">
-								{emailUsed ? "Email has been used." : "Invalid email."}</p>
+<div class="{isReady ? "hidden" : "flex items-center justify-center h-screen"}">
+		<p class="text-2xl">Loading...</p>
+</div>
+
+<div class="{isReady ? "flex" : "hidden"} h-full flex bg-white dark:bg-gray-900 text-black dark:text-white relative overflow-hidden">
+		<!-- LEFT FORM -->
+		<div class="h-full w-full md:w-1/2 h-screen flex items-center justify-center bg-zinc-200 dark:bg-gray-800/80 backdrop-blur-md relative z-10 border-r border-white/10">
+				<div class="flex flex-col h-full w-full px-10 md:px-20 py-5 md:pb-20 items-center justify-center">
+						<h1 class="w-full text-3xl font-bold mb-2">Sign Up</h1>
+						<!-- EMAIL -->
+						<label class="w-full label">Enter your email:</label>
+						<input
+								type="email"
+								placeholder="Example: your@example.domain"
+								bind:value={email}
+								on:input={validate}
+								on:blur={() => (touched.email = true)}
+								class="input text-black dark:text-white bg-slate-200 dark:bg-[#1f2937] {touched.email && errors.email
+										? 'border-red-500'
+										: ''}"
+						/>
+						{#if touched.email && errors.email}<p class="error">{errors.email}</p>{/if}
+								<!-- Name -->
+						<label class="w-full label">Enter your name:</label>
+						<input
+								type="text"
+								placeholder="Enter your name here."
+								bind:value={name}
+								on:input={validate}
+								on:blur={() => (touched.name = true)}
+								class="input text-black dark:text-white bg-slate-200 dark:bg-[#1f2937] {touched.email && errors.email
+										? 'border-red-500'
+										: ''}"
+				/>
+								{#if touched.name && errors.name}<p class="error">{errors.name}</p>{/if}
+						<!-- PASSWORD -->
+						<label class="w-full label">Enter your password:</label>
+						<div class="relative w-full">
+								<input
+										type={showPassword ? "text" : "password"}
+										placeholder="Use strong passwords."
+										bind:value={password}
+										on:input={validate}
+										on:blur={() => (touched.password = true)}
+										class="input text-black dark:text-white bg-slate-200 dark:bg-[#1f2937]"
+								/>
+										<button type="button" class="eye-btn" on:click={() => (showPassword = !showPassword)}>
+												<Fa icon={showPassword ? faEyeSlash : faEye} /></button>
 						</div>
-						<div class="w-full">
-								<p class="pt-2 pb-1">Enter your username:</p>
-								<input class="pb-4 pt-4 h-1 w-full rounded-lg dark:text-white bg-zinc-200 dark:bg-zinc-700 dark:border-white"
-							 bind:value={username} placeholder="Minimum eight characters." />
-								<p class="{usernameFalse ? '' : 'hidden'} text-sm text-red-600 dark:text-red-400">
-								{usernameUsed ? "Username has been used." : "Invalid username."}</p>
+								{#if touched.password && errors.password}<p class="error">{errors.password}</p>{/if}
+						<!-- CONFIRM -->
+						<label class="w-full label">Retype your password:</label>
+						<div class="relative w-full">
+								<input
+										type={showConfirm ? "text" : "password"}
+										placeholder="Repeat your password."
+										bind:value={confirmPassword}
+										on:input={validate}
+										on:blur={() => (touched.confirm = true)}
+										class="input text-black dark:text-white bg-slate-200 dark:bg-[#1f2937]  pr-10"
+								/>
+								<!-- 👁️ ICON -->
+								<button type="button" class="eye-btn" on:click={() => (showConfirm = !showConfirm)}>
+										<Fa icon={showConfirm ? faEyeSlash : faEye} />
+								</button>
 						</div>
-						<div class="w-full">
-								<p class="pt-2 pb-1">Enter your password (minimum eight characters):</p>
-								<input type="password" class="pb-4 pt-4 h-1 w-full rounded-lg dark:text-white bg-zinc-200 dark:bg-zinc-700 dark:border-white"
-															 bind:value={password} placeholder="With capital letters, numbers, and special characters." />
-								<p class="{passwordFalse ? '' : 'hidden'} text-sm text-red-600 dark:text-red-400">Invalid password.</p>
+						{#if touched.confirm && errors.confirm}<p class="error">{errors.confirm}</p>{/if}
+						<!-- BUTTONS -->
+						<div class="flex flex-col md:flex-row gap-4 mt-3 w-full">
+								<button on:click={createAccount} class="text-white dark:text-white btn-primary">Sign Up</button>
+								<a class="btn-secondary hover:bg-black hover:text-white hover:dark:bg-white hover:dark:text-black text-center" href="/login">
+										Login</a>
 						</div>
-						<div class="w-full">
-								<p class="pt-2 pb-1">Retype your password:</p>
-								<input type="password" class="pb-4 pt-4 h-1 w-full rounded-lg dark:text-white bg-zinc-200 dark:bg-zinc-700 dark:border-white"
-															 bind:value={retype} placeholder="Minimum eight characters." />
-								<p class="{retypeFalse ? '' : 'hidden'} text-sm text-red-600 dark:text-red-400">
-								Retyped password does not match the initial password or is empty.</p>
-						</div>
-						<!-- Buttons -->
-						<div class="w-full mt-4 flex flex-row">
-								<a on:click={signup} href="#" class="mr-2 text-center gap-3 h-full w-1/2 py-2 px-2 rounded-xl bg-zinc-200 border-zinc-800 border dark:border-white dark:bg-zinc-700 hover:bg-zinc-800 hover:text-white dark:text-white hover:dark:text-black hover:dark:bg-white font-medium whitespace-nowrap">
-										Sign Up</a>
-								<a href="/login" class="ml-2 text-center gap-3 h-full w-1/2 py-2 px-2 rounded-xl bg-zinc-200 border-zinc-800 border dark:border-white dark:bg-zinc-700 hover:bg-zinc-800 hover:text-white dark:text-white hover:dark:text-black hover:dark:bg-white font-medium whitespace-nowrap">
-								Login</a>
-						</div>
-								<a href="#" class="flex items-center justify-center w-full text-center gap-3 mt-4 py-2 px-2 rounded-xl border-zinc-800 border dark:border-white dark:bg-zinc-700 hover:bg-zinc-800 hover:text-white dark:text-white hover:dark:text-black hover:dark:bg-white font-medium whitespace-nowrap">
-										<Fa icon={faGoogle}/>
-								Sign Up with Google</a>
 				</div>
 		</div>
-		<div class="hidden sm:flex h-full w-3/5">
-				<img src="/background/signup-{$theme}.svg" alt="signup-background" class="w-full h-full object-cover"/>
-		</div>
+		
+		<div class="hidden md:block absolute left-1/2 top-0 w-40 pointer-events-none z-20 fade-edge"></div>
+				<!-- RIGHT VISUAL -->
+				<div class="hidden md:flex w-1/2 relative items-center justify-center overflow-hidden bg-right">
+						<!-- SHAPE LAYER -->
+						<div class="shape shape1"></div>
+						<div class="shape shape2"></div>
+						<div class="shape shape3"></div>
+						<!-- CONTENT -->
+						<div class="relative text-center px-20 z-10">
+								<h2 class="text-4xl font-bold mb-4">CapoLMS</h2>
+								<p class="opacity-80">
+										Platform pembelajaran modern untuk siswa dan guru. Belajar jadi
+										lebih mudah, rapi, dan terorganisir.
+								</p>
+						</div>
+				</div>
 </div>
-{/if}
