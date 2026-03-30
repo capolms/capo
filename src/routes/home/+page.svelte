@@ -7,11 +7,11 @@
 		<!-- HERO SECTION -->
 		<div class="flex flex-col items-center justify-center text-center px-10 py-24 min-h-[80vh">
 				<!-- LEFT TEXT -->
-				<div class="max-w-xl">
+				<div class="max-w-xl flex flex-col justify-center">
 						<h1 class="text-5xl font-bold leading-tight mb-12">Learning Made <span class="text-blue-500">Simple</span></h1>
 						<p class="text-gray-600 dark:text-gray-400 mb-4">
-								CapoLMS adalah Learning Management System (LMS) 
-								yang membuat pembelajaran sekolah jauh lebih sederhana.
+								CapoLMS is a simple Learning Management System
+								that is easy to use, smooth in terms of experience, and efficient in management.
 						</p>
 						<div class="flex gap-4 justify-center mt-20 mb-6">
 								<a class="px-6 py-3 bg-blue-500 rounded-lg hover:bg-blue-600 transition shadow-lg" href="/login">
@@ -37,7 +37,7 @@
 								<div class="text-blue-400 mb-4"><Fa icon={faBook} size="lg" /></div>
 								<h3 class="text-xl font-semibold mb-2 text-black dark:text-white">Easy Learning</h3>
 								<p class="text-black dark:text-gray-300">
-										Akses materi dan tugas dengan mudah dalam satu platform.
+										Access lessons and tasks in an organized manner.
 								</p>
 						</div>
 						<!-- FEATURE 2 -->
@@ -45,7 +45,7 @@
 								<div class="text-blue-400 mb-4"><Fa icon={faUsers} size="lg" /></div>
 								<h3 class="text-xl font-semibold mb-2">Collaborative</h3>
 								<p class="text-black dark:text-gray-400">
-										Interaksi antara siswa dan guru jadi lebih efektif.
+										Teachers can rate, comment, and manage the class easily.
 								</p>
 						</div>
 						<!-- FEATURE 3 -->
@@ -53,7 +53,7 @@
 								<div class="text-blue-400 mb-4"><Fa icon={faChartLine} size="lg" /></div>
 								<h3 class="text-xl font-semibold mb-2">Track Progress</h3>
 								<p class="text-black dark:text-gray-400">
-										Pantau perkembangan belajar dengan mudah dan real-time.
+										Live features for tracking progresses.
 								</p>
 						</div>
 				</div>
@@ -62,7 +62,7 @@
 		<div class="text-center py-16">
 				<h2 class="text-3xl font-bold mb-4">Start Your Learning Journey Today</h2>
 				<p class="text-black dark:text-gray-400 mb-6">
-						Gabung sekarang dan rasakan pengalaman belajar yang berbeda.
+						Sign up now for the simplest learning experience.
 				</p>
 				<a class="px-8 py-3 bg-blue-500 rounded-lg hover:bg-blue-600 transition shadow-lg" href="/login">
 						Join Now</a>

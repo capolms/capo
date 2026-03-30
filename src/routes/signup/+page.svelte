@@ -38,7 +38,11 @@
 				name: "",
 				password: "",
 				confirm: "",
+				result: ""
 		});
+		let loading = $state("");
+		let success = $state("");
+
 		function validate() {
 				errors.email = email === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 						? "Invalid email. Use this format: your@example.domain" : "";
@@ -64,16 +68,29 @@
 						touched.name = true;
 						errors.name = "Name has not been filled out."
 				};
+				if (confirmPassword === "") {
+						touched.confirm = true;
+						errors.confirm = "Please confirm your password.";
+				};
 				if (errors.email === "" && errors.password === "" && errors.confirm === "") {
+						loading = "Processing data..."
 						const { data, error } = await supabase.auth.signUp({
 								email: email,
 								password: password,
 								options: {
 										data: {
 												name: name
-										}
+										},
+										emailRedirectTo: 'localhost:5173/confirm?next=/dashboard'
 								}
 						});
+						if (error) {
+								loading = "";
+								errors.result = error.message;
+						} else {
+								loading = "";
+								success = "Please check your email to confirm your email and finish signing up."
+						};
 				};
 		};
 
@@ -152,6 +169,9 @@
 								<a class="btn-secondary hover:bg-black hover:text-white hover:dark:bg-white hover:dark:text-black text-center" href="/login">
 										Login</a>
 						</div>
+						<p class="mt-2 text-yellow-600 w-full">{loading}</p>
+						<p class="mt-2 text-green-600 w-full">{success}</p>
+						<p class="mt-2 error w-full">{errors.result}</p>
 				</div>
 		</div>
 		

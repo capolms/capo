@@ -49,8 +49,6 @@
 				<a class="{nonLMSLinks ? "hidden sm:flex" : "hidden"} pl-2 pr-2 mt-2 mb-2" href="/help">Help</a>
 		</div>
 		<div class="flex justify-center">
-				<a class="{nonLMSLinks ? "hidden sm:flex" : "hidden"} items-center gap-3 px-4 py-2 rounded-xl hover:bg-zinc-800 hover:text-white dark:text-white dark:hover:bg-white hover:dark:text-black whitespace-nowrap">
-						<Fa icon={faGlobe} />Language</a>
 				<button on:click={changeTheme}
 		class="w-full {nonLMSLinks ? "hidden sm:flex" : "hidden"} items-center gap-3 px-4 py-2 rounded-xl hover:bg-zinc-800 hover:text-white dark:text-white dark:hover:bg-white hover:dark:text-black whitespace-nowrap">
 						<Fa icon={theme === 'dark' ? faSun : faMoon} />{theme === 'dark' ? "Switch to Light" : "Switch to Dark"}

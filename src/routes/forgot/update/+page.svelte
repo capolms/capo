@@ -56,7 +56,6 @@
 						failedPasswordChange = "";
 						loading = "";
 						success = "Password has been changed.";
-						console.log(data);
 						goto('/dashboard', {replaceState : true})
 				};
 		};

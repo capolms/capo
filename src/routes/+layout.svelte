@@ -34,6 +34,7 @@
 		let nonLMSLinks = $derived(paths.some(path => page.url.pathname.includes(path)));
 
 		if (isHttpError) {nonLMSLinks = true};
+		if (page.url.pathname === "/") {nonLMSLinks = true};
 
 		// If mobile is true, and the menu is opened, close the menu for comfort.
 		// But if mobile ain't true, and it is a LMS link, keep the menu open.
@@ -64,8 +65,8 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="h-dvh w-full flex flex-col overflow-hidden p-0">
-		<div data-theme="{data.theme}" ><Menubar nonLMSLinks={nonLMSLinks}/></div>
+<div class="flex h-dvh w-full flex-col overflow-hidden p-0">
+		<div data-theme="{data.theme}" class="{page.url.pathname === '/' ? 'hidden' : ''}" ><Menubar nonLMSLinks={nonLMSLinks}/></div>
 		<div  data-theme="{data.theme}" class="flex-1 flex overflow-y-auto">
 				{#if $menu_shown !== 'hidden'}
 						<div  data-theme="{data.theme}" class="{isMobile && $menu_shown === 'flex' ? 'w-full' : '' } overflow-hidden"

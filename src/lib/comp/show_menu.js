@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-const menu_shown = writable('hidden'); // flex = open is default, hidden = close is default.
+const menu_shown = writable('flex'); // flex = open is default, hidden = close is default.
 
 function show_menu() {
 		menu_shown.update(current => {

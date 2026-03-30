@@ -28,7 +28,7 @@
 				loading = "Please wait..."
 				
 				const { data, sbError } = await supabase.auth.resetPasswordForEmail(email, {
-						redirectTo: `http://localhost:5173/confirm`
+						redirectTo: `http://localhost:5173/confirm?next=/forgot/update`
 				});
 
 				if (sbError) {

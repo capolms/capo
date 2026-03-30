@@ -2,14 +2,16 @@ import { redirect, error } from '@sveltejs/kit';
 
 export const load = async ({ url, locals: { supabase } }) => {
 		const code = url.searchParams.get('code');
-		const next = url.searchParams.get('next') ?? '/forgot/update';
+		const next = url.searchParams.get('next');
 
-		console.log(code)
+		if (next === "") {
+				throw error(404, 'Missing redirect link.');
+		};
 
 		if (code) {
 				// This is the "Secret Handshake"
 				const { error: authError } = await supabase.auth.exchangeCodeForSession(code);
-    
+
 				if (!authError) {
 						// The session is now saved in a secure cookie!
 						throw redirect(303, next);

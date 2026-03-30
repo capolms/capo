@@ -9,7 +9,6 @@
 <script>
 		import { onMount } from 'svelte';
 		import { invalidateAll, goto } from '$app/navigation';
-
 		import { supabase } from '$lib/api/sb';
 		import { menu_shown } from '$lib/comp/show_menu';
 		import { theme as themeStore } from '$lib/comp/get_theme';
@@ -23,12 +22,6 @@
 		// When on mount, immediately get the latest theme data.
 		onMount( async () => {
 				theme = document.documentElement.getAttribute('data-theme')
-				const { data: { user } } = await supabase.auth.getUser();
-				const isLoggedIn = !!user;
-
-				if (isLoggedIn) {
-						ready = true;
-				};
 		});
 
 		// Change the theme.
@@ -60,7 +53,7 @@
 
 
 <!-- Sidebar -->
-<div class="{ready ? (nonLMSLinks ? {$menu_shown} + " sm:hidden" : {$menu_shown}) : "hidden"} h-full bg-zinc-200 dark:bg-gray-600 flex-col overflow-hidden pr-2">
+<div class="{nonLMSLinks ? {$menu_shown} + " sm:hidden" : {$menu_shown}} h-full bg-zinc-200 dark:bg-gray-600 flex-col overflow-hidden pr-2">
 		<div class="px-8 pt-6 pb-3">
 				<h1 class="text-2xl font-bold text-blue-600 dark:text-white whitespace-nowrap">CapoLMS</h1>
 				<p class="text-sm text-gray-500 dark:text-white mt-1 whitespace-nowrap">Simple LMS, for you.</p>
@@ -89,9 +82,6 @@
 				<!-- Tugas -->
 				<a href="/help" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-gray-400 dark:text-white hover:dark:text-black whitespace-nowrap">
 						<Fa icon={faCircleQuestion} />Help and Support</a>
-				<!-- Language -->
-				<a class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-gray-400 dark:text-white hover:dark:text-black whitespace-nowrap">
-						<Fa icon={faGlobe} />Change Language</a>
 				<!-- Dark/Light Mode -->
 				<button on:click={changeTheme}
 						class="w-full flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-gray-400 dark:text-white hover:dark:text-black whitespace-nowrap">
@@ -100,7 +90,8 @@
 				<!-- Logout Button -->
 				<button on:click={logout}
 						class="w-full flex items-center gap-3 px-4 py-2 mt-2 rounded-xl hover:bg-red-300 dark:hover:bg-red-100 font-medium whitespace-nowrap">
-						<Fa icon={faArrowRightFromBracket} class="text-red-600 dark:text-red-400"/><span class="text-red-600 dark:text-red-400">Long out</span>
+						<Fa icon={faArrowRightFromBracket}
+								class="text-red-600 dark:text-red-400"/><span class="text-red-600 dark:text-red-400">Sign Out</span>
 				</button>
 		</nav>
 </div>

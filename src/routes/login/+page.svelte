@@ -32,17 +32,22 @@
 		};
 		let errors = $state("");
 
+		let loading = $state("");
+
 		let formalAuthErrors = {
 				"validation_failed" : "Missing email and/or password.",
 				"invalid_credentials" : "Wrong email and/or password."
 		};
 
 		async function processData() {
+				errors  = "";
+				loading = "Processing data...";
 				const { data, error } = await supabase.auth.signInWithPassword({
 						email : email,
 						password : password
 				});
 				if (error) {
+						loading = ""
 						errors = formalAuthErrors[error.code];
 				} else {
 						goto('/dashboard', {replaceState : true});
@@ -59,7 +64,7 @@
 <div class="{isReady ? "flex" : "hidden"} h-full bg-white dark:bg-gray-900 text-black dark:text-white relative overflow-hidden">
 		<!-- LEFT FORM -->
 		<div class="h-full w-full md:w-1/2 h-screen flex items-center justify-center bg-zinc-200 dark:bg-gray-800/80 backdrop-blur-md relative z-10 border-r border-white/10">
-				<div class="h-full w-full pb-20 px-20 flex flex-col justify-center items-center">
+				<div class="h-full w-full pb-20 px-10 md:px-20 flex flex-col justify-center items-center">
 						<h1 class="text-3xl font-bold mb-3 w-full">Login</h1>
 						<!-- USERNAME -->
 						<label class="label w-full">Enter your email:</label>
@@ -83,6 +88,7 @@
 								<button type="button" class="eye-btn" on:click={() => (showPassword = !showPassword)}>
 												<Fa icon={showPassword ? faEyeSlash : faEye} /></button>
 						</div>
+						<p class="mt-2 text-yellow-600 w-full">{loading}</p>
 						{#if errors}<p class="error">{errors}</p>{/if}
 						<!-- BUTTONS -->
 						<div class="flex gap-4 mt-6 w-full">
@@ -94,6 +100,7 @@
 								class="btn-google hover:bg-black hover:text-white hover:dark:bg-white hover:dark:text-black mt-4 flex items-center justify-center gap-3">
 								<span>I Forgot My Password</span>
 						</a>
+
 				</div>
 		</div>
 		
