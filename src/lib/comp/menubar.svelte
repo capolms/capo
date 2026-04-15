@@ -9,7 +9,7 @@
 <script>
 		import { onMount } from 'svelte';
 		import { invalidateAll } from '$app/navigation';
-
+		import { supabase } from '$lib/api/sb';
 		import { menu_shown, show_menu } from '$lib/comp/show_menu';
 		import { theme as themeStore } from '$lib/comp/get_theme';
 
@@ -20,7 +20,7 @@
 		let theme = $state(); // Initiate the theme holding as a reactive variable.
 
 		// When on mount, immediately get the latest theme data.
-		onMount(() => {
+		onMount( async () => {
 				theme = document.documentElement.getAttribute('data-theme');
 		});
 

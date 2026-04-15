@@ -8,7 +8,7 @@
 
 <script>
 		import { onMount } from 'svelte';
-		import { invalidateAll, goto } from '$app/navigation';
+		import { goto, afterNavigate } from '$app/navigation';
 		import { supabase } from '$lib/api/sb';
 		import { menu_shown } from '$lib/comp/show_menu';
 		import { theme as themeStore } from '$lib/comp/get_theme';
@@ -18,10 +18,20 @@
 
 		let theme = $state();
 		let ready = $state(false);
+		let email = $state("");
+		let name  = $state("");
 
 		// When on mount, immediately get the latest theme data.
 		onMount( async () => {
-				theme = document.documentElement.getAttribute('data-theme')
+				theme = document.documentElement.getAttribute('data-theme');
+		});
+
+		afterNavigate(async () => {
+				const { data: { user } } = await supabase.auth.getUser();
+				if (user) {
+						email = user.email;
+						name  = user.user_metadata.name;
+				};
 		});
 
 		// Change the theme.
@@ -43,6 +53,8 @@
 				if (error) {
 						alert(error.message);
 				} else {
+						email = "";
+						name = "";
 						goto('/home');
 				};
 		};
@@ -61,8 +73,8 @@
     <!-- Profile Section -->
 		<div class="px-8 gap-3 py-3">
 				<div>
-						<p class="font-semibold text-gray-800 dark:text-white whitespace-nowrap">Emperor Richard</p>
-						<p class="text-sm text-gray-500 dark:text-white whitespace-nowrap">Siswa</p>
+						<p class="font-semibold text-gray-800 dark:text-white whitespace-nowrap">{name}</p>
+						<p class="text-sm text-gray-500 dark:text-white whitespace-nowrap">{email}</p>
 				</div>
 		</div>
 		<!-- List sections -->

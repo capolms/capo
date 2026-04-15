@@ -20,6 +20,8 @@
 		import Navbar from '$lib/comp/navbar.svelte';
 		import Menubar from '$lib/comp/menubar.svelte';
 		import { menu_shown } from '$lib/comp/show_menu';
+		import { onMount } from 'svelte';
+		import { supabase } from '$lib/api/sb';
 
 		// This is your boolean variable
 		// It yields true if the status is 400 or higher
@@ -57,6 +59,7 @@
 						document.documentElement.setAttribute('data-theme', theme);
 				};
 		});
+
 </script>
 
 <svelte:head>

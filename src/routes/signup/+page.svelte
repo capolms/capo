@@ -56,6 +56,7 @@
 				errors.name = name === "" ? "Name has not been filled out." : "";
 		};
 		async function createAccount() {
+				success = "";
 				if (email === "") {
 						touched.email = true;
 						errors.email = "Email has not been filled out."
