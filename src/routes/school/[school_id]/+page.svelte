@@ -7,7 +7,6 @@
 
 		// This "id" matches the folder name [id]
 		let schoolID   = $page.params.school_id;
-		let periodID   = $page.params.period_id;
 		let classData  = $state([]);
 		let role       = $state("");
 		let userID     = $state("");
