@@ -17,8 +17,7 @@
 						.from('membership')
 						.select(`
 								role,
-								period (
-										period_id,
+								period_id (
 										name,
 										school (
 												name,
@@ -29,12 +28,11 @@
 						`)
 						.eq('user_id', userID);
 				schoolData.push(...rawSchoolID?.map(m => ({
-						schoolID    : m.period.school.school_id,
+						schoolID    : m.period_id.school.school_id,
 						role        : m.role,
-						periodID    : m.period.period_id,
-						periodName  : m.period.name,
-						schoolName  : m.period.school.name,
-						schoolImage : m.period.school.image
+						periodName  : m.period_id.name,
+						schoolName  : m.period_id.school.name,
+		schoolImage : m.period_id.school.image
 				})));
 		};
 
@@ -75,7 +73,7 @@
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
 						{#if schoolData.length > 0}
 								{#each schoolData as school}
-										<Widget first={school.schoolName} second={school.periodName} third={school.role} image={school.schoolImage} button="/school/{school.schoolID}/period/{school.periodID}"/>
+										<Widget first={school.schoolName} second={school.periodName} third={school.role} image={school.schoolImage} button="/school/{school.schoolID}"/>
 								{/each}
 						{:else}
 								<div class="flex justify-center items-center h-full w-full">Add or create a new school to get started.</div>

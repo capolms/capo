@@ -8,7 +8,7 @@
 
 <script>
 		import { onMount } from 'svelte';
-		import { goto, afterNavigate } from '$app/navigation';
+		import { goto, afterNavigate, invalidateAll } from '$app/navigation';
 		import { supabase } from '$lib/api/sb';
 		import { menu_shown } from '$lib/comp/show_menu';
 		import { theme as themeStore } from '$lib/comp/get_theme';

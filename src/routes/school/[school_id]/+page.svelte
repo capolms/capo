@@ -18,14 +18,11 @@
 				const { data, error } = await supabase
 						.from('membership')
 						.select(`
-								period_id,
 								role,
-								period (
-										school_id
-								)
+								period_id (school_id)
 						`)
 						.eq('user_id', userID)
-						.eq('period.school_id', schoolID);
+						.eq('period_id.school_id', schoolID);
 
 				role = data[0].role;
 
@@ -75,7 +72,6 @@
 										image			: m.image,
 										handler   : m.handler.metadata.name
 								})));
-								console.log(subClassData)
 								classData.push({
 										period_name    : period.name,
 										period_id		   : period.period_id,
